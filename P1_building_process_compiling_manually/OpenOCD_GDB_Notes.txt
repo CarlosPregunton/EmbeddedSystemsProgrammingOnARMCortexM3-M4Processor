@@ -1,0 +1,16 @@
+execute in a single shell the following command:
+make load
+open another shell and execute the following commands
+gdb-multiarch
+Note every line is presided by "(gdb)" text. 
+That means gdb is active. Then, execute the following 
+command:
+target remote localhost:3333
+Note accepting 'gdb' connection on tcp/3333 message is 
+displayed on open ocd shell. 
+
+Execute the following command on gdb shell:
+monitor reset init
+
+To flash the target board execute the following command:
+monitor flash write_image erase final.elf
