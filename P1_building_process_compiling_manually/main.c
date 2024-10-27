@@ -1,69 +1,47 @@
-#include "led.h"
-#include "usart.h"
-#include "timebase.h"
 
-void motor_run(void);
-void motor_stop(void);
-void valve_close(void);
-void valve_open(void);
-int motor_main(void);
-int valve_main(void);
+#include "stm32f303xx.h"
+#include "stm32f303xx_gpio.h"
+
+void delay(uint32_t cnt){
+	while(cnt)
+		cnt--;
+}
+
+GPIO_handle_t LED;
+GPIO_handle_t Button;
+
+void GPIO_setup(void){
+	LED.pGPIOx = GPIOA;
+	LED.GPIO_config.GPIO_Mode = GPIO_Mode_OUT;
+	LED.GPIO_config.GPIO_Otyper = GPIO_Otyper_PP;
+	LED.GPIO_config.GPIO_Pin = GPIO_PIN_5;
+	LED.GPIO_config.GPIO_PuPd = GPIO_PuPd_NONE;
+	LED.GPIO_config.GPIO_Speed = GPIO_Speed_LOW;
+	GPIO_Init(&LED);
+
+	Button.pGPIOx = GPIOC;
+	Button.GPIO_config.GPIO_Mode = GPIO_Mode_IN;
+	Button.GPIO_config.GPIO_Pin = GPIO_PIN_13;
+	Button.GPIO_config.GPIO_PuPd = GPIO_PuPd_NONE;
+	Button.GPIO_config.GPIO_Speed = GPIO_Speed_LOW;
+	GPIO_Init(&Button);
+}
 
 int main(void){
 
-	led_init();
-	timebase_init();
-	usart_tx_init();
-	usart_enabled();
+	GPIO_setup();
+
 	while(1){
-		uint32_t volatile start = 0;
-		if(start == 0){
-			motor_main();
+		if(!GPIO_ReadPin(Button.pGPIOx,GPIO_PIN_13)){
+			GPIO_TogglePin(LED.pGPIOx, GPIO_PIN_5);
+			delay(500000);
 		}else{
-			valve_main();
+			GPIO_WritePin(Button.pGPIOx,GPIO_PIN_13,RESET);
 		}
 	}
 }
 
-void motor_run(void){
-	printf("Motor is running");
-}
-void motor_stop(void){
-	printf("Motor is stop");
-}
-void valve_close(void){
-	printf("The valve is close");
-}
-void valve_open(void){
-	printf("The valve is open");
-}
+/* Reference file: 
+   https://kleinembedded.com/stm32-without-cubeide-part-1-the-bare-necessities/
+*/
 
-int motor_main(){
-	while(1){
-		motor_run();
-		delay(1);
-		motor_stop();
-		delay(1);
-	}
-}
-
-int valve_main(){
-	while(1){
-		valve_open();
-		delay(1);
-		valve_close();
-		delay(1);
-	}
-}
-//When an exception occurs by exception we mean an interrupt
-//When an exception occurs, set in registers need to be preserved
-//so after the exception or interruption finishes its execution, we
-//can go back and take those contents and put them back in those same
-//registers and those will allow the program to continue from where
-//we left off before the execution occurred.
-
-//When an exception occurs, set in registers need to be preserved.
-//So that after the exception or interrupt finishes its execution
-//, we can go back and take those contents and put them back in those
-//same registers. This allow the program to continue from where we
-//left off before the exception occurred.
