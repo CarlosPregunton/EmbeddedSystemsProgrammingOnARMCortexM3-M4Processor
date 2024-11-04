@@ -59,6 +59,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f3xx_hal.h"
+#include "system_stm32f3xx.h"
 
 /** @addtogroup STM32F3xx_HAL_Driver
   * @{
