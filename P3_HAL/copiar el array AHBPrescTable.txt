@@ -1,0 +1,1 @@
+copiar el array "AHBPrescTable" y "APBPrescTable" en system_stm32f3xx hacia el archivo stm32f3xx_hal_rcc.c

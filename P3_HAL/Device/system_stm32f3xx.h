@@ -83,6 +83,9 @@ extern uint32_t SystemCoreClock;          /*!< System Clock Frequency (Core Cloc
 /** @addtogroup STM32F3xx_System_Exported_Constants
   * @{
   */
+  
+extern const uint8_t AHBPrescTable[16];
+extern const uint8_t APBPrescTable[8];
 
 /**
   * @}
