@@ -33,7 +33,7 @@ all: $(BUILD_DIR)/blink.elf
 # Objetivo .elf
 $(BUILD_DIR)/blink.elf: $(BUILD_DIR)/main.o $(BUILD_DIR)/startup_stm32f303xe.o $(BUILD_DIR)/system_stm32f3xx.o \
 	$(BUILD_DIR)/stm32f3xx_hal.o $(BUILD_DIR)/stm32f3xx_hal_gpio.o $(BUILD_DIR)/stm32f3xx_hal_rcc.o \
-	$(BUILD_DIR)/stm32f3xx_hal_cortex.o
+	$(BUILD_DIR)/stm32f3xx_hal_cortex.o $(BUILD_DIR)/stm32f3xx_it.o
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $^ -o $@
 	
 #$(BUILD_DIR)/blink.bin: $(BUILD_DIR)/blink.elf
@@ -60,6 +60,9 @@ $(BUILD_DIR)/stm32f3xx_hal_rcc.o: $(PROJECT_DIR)/P3_HAL/Drivers/Src/stm32f3xx_ha
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 	
 $(BUILD_DIR)/stm32f3xx_hal_cortex.o: $(PROJECT_DIR)/P3_HAL/Drivers/Src/stm32f3xx_hal_cortex.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/stm32f3xx_it.o: $(PROJECT_DIR)/P3_HAL/Device/stm32f3xx_it.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # Limpieza de archivos generados

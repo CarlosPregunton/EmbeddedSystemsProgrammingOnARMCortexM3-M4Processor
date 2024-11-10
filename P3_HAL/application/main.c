@@ -36,7 +36,6 @@
 void SystemClock_Config(void);
 static void Error_Handler(void);
 void LED_Init(void);
-void delay_ms(uint32_t ms);
 void _init(void) {}
 /* Private functions ---------------------------------------------------------*/
 
@@ -69,9 +68,9 @@ int main(void)
   while (1)
   {
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-        for (volatile int i = 0; i < 1000000; i++);
+        HAL_Delay(1000);
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-        for (volatile int i = 0; i < 1000000; i++);
+        HAL_Delay(1000);
   }
 }
 
@@ -132,14 +131,6 @@ void LED_Init(void) {
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW; // Baja velocidad (suficiente para LEDs)
     
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);     // Inicializa el pin con las configuraciones
-}
-
-// Función de retardo simple en milisegundos (no bloqueante)
-void delay_ms(uint32_t ms) {
-    
-    while(ms > 0){
-      ms--;
-    }
 }
 
 /**
