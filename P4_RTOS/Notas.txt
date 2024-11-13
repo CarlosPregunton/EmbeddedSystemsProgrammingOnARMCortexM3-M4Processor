@@ -1,0 +1,36 @@
+Notas:
+
+Modificaciones en los archivos
+
+En el archivo config_template se seteo esta opción como 1
+#define configSUPPORT_STATIC_ALLOCATION 1
+
+Se activo la FPU en el makefile
+-mfloat-abi=hard y -mfpu=fpv4-sp-d16 en CFLAGS.
+
+Se ha retirado el archivo stm32fxx_it.c, las interrupciones ahora las maneja el RTOS
+
+ * INCLUDE_uxTaskGetStackHighWaterMark must be set to 1 in FreeRTOSConfig.h for
+ * this function to be available.
+ 
+ Revisa los flags de preprocesador: En el archivo FreeRTOSConfig.h, asegúrate de que están habilitadas las configuraciones necesarias para usar timers.c y event_groups.c,
+ especialmente configUSE_TIMERS y configUSE_COUNTING_SEMAPHORES
+ 
+ FIX 2 
+
+Asegúrate de que vTaskDelayUntil esté habilitada: La función vTaskDelayUntil se utiliza para crear delays absolutos y requiere que INCLUDE_vTaskDelayUntil esté activado.
+
+#define INCLUDE_vTaskDelayUntil 1
+
+Verifica que configUSE_TIMERS y configUSE_COUNTING_SEMAPHORES estén definidos: Aunque ya los hayas habilitado, asegúrate de que estén configurados de la siguiente manera:
+
+#define configUSE_TIMERS 1
+#define configUSE_COUNTING_SEMAPHORES 1
+
+FIX 3
+
+INCLUDE_xEventGroupSetBitFromISR
+configUSE_TIMERS and INCLUDE_xTimerPendFunctionCall
+must all be set to 1 in FreeRTOSConfig.h for the
+xEventGroupSetBitsFromISR()
+function to be available.

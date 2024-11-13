@@ -1,0 +1,35 @@
+FIX 1
+copiar el array "AHBPrescTable" y "APBPrescTable" en system_stm32f3xx hacia el archivo stm32f3xx_hal_rcc.c
+
+La función _init no está definida en las librerías HAL de STM32, ya que esta función generalmente no es específica de la HAL, sino que es parte de la configuración del entorno del compilador y de la biblioteca estándar de C (libc). Esta función suele estar definida en los sistemas que utilizan la biblioteca estándar y se llama automáticamente durante la inicialización de la biblioteca antes de que main comience. En sistemas embebidos, especialmente en aquellos que usan -nostdlib o -nodefaultlibs, esta función puede no estar implementada.
+
+Para resolver el problema de la referencia indefinida a _init, tienes dos opciones comunes:
+
+    Definir una función vacía _init en tu propio código, para que el enlace no falle:
+
+    void _init() {}
+
+    Excluir el uso de la biblioteca estándar de C. Si estás usando -nostdlib, asegúrate de no enlazar automáticamente libc.a. También revisa que no estés llamando funciones de la biblioteca estándar que puedan requerir inicialización de esta.
+
+En resumen, al agregar una definición vacía de _init, deberías poder enlazar sin problemas adicionales.
+
+
+FIX 2
+
+Incluir las variables AHBPrescTable y APBPrescTable en el archivo de cabecera system_stm32f3xx.h puede ser una buena solución si defines estas variables como extern en el archivo de cabecera, lo que indica que son definidas en otro lugar. Esto permitirá que stm32f3xx_hal_rcc.c pueda acceder a ellas sin problemas de compilación.
+
+Para hacerlo, podrías modificar system_stm32f3xx.h de la siguiente manera:
+
+extern const uint32_t AHBPrescTable[16];
+extern const uint32_t APBPrescTable[8];
+
+Luego, asegúrate de que las tablas están definidas en system_stm32f3xx.c (sin extern):
+
+const uint32_t AHBPrescTable[16] = { /* valores específicos */ };
+const uint32_t APBPrescTable[8] = { /* valores específicos */ };
+
+Importante
+
+Es mejor evitar definir las variables directamente en el archivo de cabecera (system_stm32f3xx.h), ya que esto puede causar problemas de duplicación si el archivo se incluye en varios lugares. Definirlas como extern en el archivo de cabecera y luego definirlas como constantes en el archivo de implementación (system_stm32f3xx.c) es una práctica estándar que mantiene el proyecto más organizado y evita problemas en la vinculación.
+
+Prueba esta solución y, si sigues teniendo problemas, me avisas para revisar otras posibles causas.
