@@ -3,7 +3,9 @@ PROJECT_DIR=/home/carlos/Documents/EmbeddedSystemsProgrammingOnARMCortexM3-M4Pro
 
 # Compilador y opciones
 CC=arm-none-eabi-gcc
-CFLAGS=-mcpu=cortex-m4 -mthumb -nostdlib -O0
+
+# No incluir la bandera -nostdlib para incluir la libreria standard 
+CFLAGS=-mcpu=cortex-m4 -mthumb -O0
 CPPFLAGS=-DSTM32F303xE \
 	 -DUSE_HAL_DRIVER \
 	 -I$(PROJECT_DIR)/P3_HAL/blinking_led \
@@ -12,22 +14,24 @@ CPPFLAGS=-DSTM32F303xE \
 	 -I$(PROJECT_DIR)/P3_HAL/Drivers/Inc # Incluir la carpeta Drivers
 	
 # Archivo de linker
+#-specs=nosys.specs evitar tener que implementar o definir el metodo _exit
 LINKER_FILE=$(PROJECT_DIR)/P3_HAL/Device/STM32F303RETx_FLASH.ld
-LDFLAGS=-T $(LINKER_FILE)
+LDFLAGS=-T $(LINKER_FILE) -specs=nosys.specs
 
 # Directorio de salida
 BUILD_DIR=$(PROJECT_DIR)/P3_HAL/build_print_through_uart
 
 # Objetivo principal
-all: $(BUILD_DIR)/blink.elf $(BUILD_DIR)/blink.bin
+all: $(BUILD_DIR)/print_through_uart.elf $(BUILD_DIR)/print_through_uart.bin
 
-$(BUILD_DIR)/blink.bin: $(BUILD_DIR)/blink.elf
-	arm-none-eabi-objcopy -O binary $(BUILD_DIR)/blink.elf $(BUILD_DIR)/blink.bin
+$(BUILD_DIR)/print_through_uart.bin: $(BUILD_DIR)/print_through_uart.elf
+	arm-none-eabi-objcopy -O binary $(BUILD_DIR)/print_through_uart.elf $(BUILD_DIR)/print_through_uart.bin
 
 # Objetivo .elf
-$(BUILD_DIR)/blink.elf: $(BUILD_DIR)/main.o $(BUILD_DIR)/startup_stm32f303xe.o $(BUILD_DIR)/system_stm32f3xx.o \
+$(BUILD_DIR)/print_through_uart.elf: $(BUILD_DIR)/main.o $(BUILD_DIR)/startup_stm32f303xe.o $(BUILD_DIR)/system_stm32f3xx.o \
 	$(BUILD_DIR)/stm32f3xx_hal.o $(BUILD_DIR)/stm32f3xx_hal_gpio.o $(BUILD_DIR)/stm32f3xx_hal_rcc.o \
-	$(BUILD_DIR)/stm32f3xx_hal_cortex.o $(BUILD_DIR)/stm32f3xx_it.o $(BUILD_DIR)/stm32f3xx_hal_msp.o
+	$(BUILD_DIR)/stm32f3xx_hal_cortex.o $(BUILD_DIR)/stm32f3xx_it.o $(BUILD_DIR)/stm32f3xx_hal_msp.o $(BUILD_DIR)/stm32f3xx_hal_uart.o \
+	$(BUILD_DIR)/stm32f3xx_hal_uart_ex.o $(BUILD_DIR)/stm32f3xx_hal_dma.o
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $^ -o $@
 
 # Compilación de archivos fuente
@@ -52,10 +56,19 @@ $(BUILD_DIR)/stm32f3xx_hal_rcc.o: $(PROJECT_DIR)/P3_HAL/Drivers/Src/stm32f3xx_ha
 $(BUILD_DIR)/stm32f3xx_hal_cortex.o: $(PROJECT_DIR)/P3_HAL/Drivers/Src/stm32f3xx_hal_cortex.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 	
+$(BUILD_DIR)/stm32f3xx_hal_msp.o: $(PROJECT_DIR)/P3_HAL/Drivers/Src/stm32f3xx_hal_msp.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+	
 $(BUILD_DIR)/stm32f3xx_hal_gpio.o: $(PROJECT_DIR)/P3_HAL/Drivers/Src/stm32f3xx_hal_gpio.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/stm32f3xx_hal_msp.o: $(PROJECT_DIR)/P3_HAL/Drivers/Src/stm32f3xx_hal_msp.c
+$(BUILD_DIR)/stm32f3xx_hal_uart.o: $(PROJECT_DIR)/P3_HAL/Drivers/Src/stm32f3xx_hal_uart.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/stm32f3xx_hal_uart_ex.o: $(PROJECT_DIR)/P3_HAL/Drivers/Src/stm32f3xx_hal_uart_ex.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/stm32f3xx_hal_dma.o: $(PROJECT_DIR)/P3_HAL/Drivers/Src/stm32f3xx_hal_dma.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 	
 # Limpieza de archivos generados

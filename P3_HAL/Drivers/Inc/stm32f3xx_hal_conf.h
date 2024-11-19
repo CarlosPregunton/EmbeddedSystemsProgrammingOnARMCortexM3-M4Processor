@@ -45,7 +45,7 @@
 #define HAL_CORTEX_MODULE_ENABLED
 //#define HAL_CRC_MODULE_ENABLED
 //#define HAL_DAC_MODULE_ENABLED
-//#define HAL_DMA_MODULE_ENABLED
+#define HAL_DMA_MODULE_ENABLED
 
 /*
   Usado en la configuración inicial para acceder a memoria Flash.
@@ -79,8 +79,8 @@
 //#define HAL_SPI_MODULE_ENABLED
 //#define HAL_TIM_MODULE_ENABLED
 //#define HAL_TSC_MODULE_ENABLED
-//#define HAL_UART_MODULE_ENABLED
-//#define HAL_USART_MODULE_ENABLED
+#define HAL_UART_MODULE_ENABLED
+#define HAL_USART_MODULE_ENABLED
 //#define HAL_WWDG_MODULE_ENABLED
 
 /* ########################## HSE/HSI Values adaptation ##################### */

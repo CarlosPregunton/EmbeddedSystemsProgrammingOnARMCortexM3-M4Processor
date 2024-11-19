@@ -9,17 +9,23 @@ for port in ports:
 # Configura el puerto serie
 ser = serial.Serial(
     port='/dev/ttyACM0',  # Reemplaza con el puerto de tu microcontrolador (en Linux puede ser algo como '/dev/ttyUSB0')
-    baudrate=9600,  # Configura la velocidad en baudios según tu microcontrolador
-    timeout=1  # Tiempo de espera para lectura en segundos
+    baudrate=115200,  # Configura la velocidad en baudios según tu microcontrolador
+    timeout=2  # Tiempo de espera para lectura en segundos
 )
 
-try:
+#try:
     # Leer datos continuamente
-    while True:
-        if ser.in_waiting > 0:  # Comprueba si hay datos disponibles
-            data = ser.readline().decode('utf-8').strip()  # Lee una línea completa
-            print(f'Datos recibidos: {data}')
-except KeyboardInterrupt:
-    print("Saliendo del programa...")
-finally:
-    ser.close()  # Asegúrate de cerrar el puerto serie
+#    while True:
+#        if ser.in_waiting > 0:  # Comprueba si hay datos disponibles
+#            data = ser.readline().decode('utf-8').strip()  # Lee una línea completa
+#            print(f'Datos recibidos: {data}')
+# except KeyboardInterrupt:
+#    print("Saliendo del programa...")
+# finally:
+#    ser.close()  # Asegúrate de cerrar el puerto serie
+
+while True:
+
+    data = ser.readline().decode('utf-8') # Lee una línea completa
+    print(f'Datos recibidos: {data}')
+

@@ -20,6 +20,8 @@ void SystemClock_Config(void);
 
 void LED_Init(void);
 
+void UART_Init(UART_HandleTypeDef* huart2); 
+
 static void Error_Handler(void);
 
 #ifdef __cplusplus

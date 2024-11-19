@@ -1,20 +1,23 @@
 #include "main.h"
 #include "stm32f3xx_hal.h"
 #include "stm32f3xx_hal_msp.h"
+#include <stdio.h>
 
-void _init(void) {}
-
+UART_HandleTypeDef huart2;
 int main(void) {
 
   HAL_Init();
-  HAL_MspInit();
+  /* Configure the system clock to 64 MHz */
+  SystemClock_Config();
+  /*Setting up tick variable*/
+  HAL_InitTick(TICK_INT_PRIORITY);
   
-  while (1){
+  UART_Init(&huart2);
   
-        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-        HAL_Delay(1000);
-        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-        HAL_Delay(1000);
+  char loop_message[] = "This is a test message.\n";
+  while (1) {
+      HAL_Delay(1000);
+      HAL_UART_Transmit(&huart2, (uint8_t *)loop_message, sizeof(loop_message) - 1, HAL_MAX_DELAY);
   }
 }
 
